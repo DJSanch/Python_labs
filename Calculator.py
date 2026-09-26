@@ -1,4 +1,4 @@
-choice = input("Enter choice: \n[1]Addition\n[2]Subtraction\n[3]Multiplication\n[4]Division) \nEnter your choice: ")
+choice = input("Enter choice: \n[1]Addition\n[2]Subtraction\n[3]Multiplication\n[4]Division \nEnter your choice: ")
 
 num1 = float(input("Enter first number: "))
 num2 = float(input("Enter second number: "))
@@ -18,3 +18,5 @@ elif choice == "4":
         print("The quotient is:", quotient)
     else:
         print("Error: Division by zero is not allowed.")
+else:
+    print("Invalid choice. Please select a valid option.")
