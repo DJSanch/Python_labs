@@ -1,19 +1,12 @@
 
 color = input("Enter your favorite color: ")
 
-if color == "red":
-    print("Your favorite color is red!")
-elif color == "green":
-    print("Your favorite color is green!")
-elif color == "blue":
-    print("Your favorite color is blue!")
-elif color == "yellow":
-    print("Your favorite color is yellow!")
-elif color == "orange":
-    print("Your favorite color is orange!")
-else:
-    exit("Your favorite color is not in the list of colors.")
+colors = ["red", "green", "blue", "yellow", "orange"]
 
+if color in colors:
+    print(f"{color} is a great color!")
+else:
+    exit(f"{color} is not in the list of favorite colors.")
 
 
 Name1 = input("Enter your first name: ")
