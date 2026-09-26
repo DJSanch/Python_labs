@@ -9,3 +9,4 @@ print(first, last) #prints the full name using comma separation
 
 print(first.upper()) #prints the first name in uppercase
 print(last.lower()) #prints the last name in lowercase
+

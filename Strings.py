@@ -15,3 +15,5 @@ print(Hobby[0]) #prints the first character of the string variable
 print(Achievement[0]) #prints the first character of the multiline string variable
 print(Hobby[0:4]) #prints the first four characters of the string variable
 print(Medals)
+
+
