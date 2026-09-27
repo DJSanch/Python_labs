@@ -7,9 +7,13 @@ from flask import Flask, jsonify, render_template, request, send_file
 from PIL import Image, ImageOps, UnidentifiedImageError
 from pillow_heif import register_heif_opener
 
+
+# Flask app configuration
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024
 
+
+# Constants
 MAX_IMAGE_PIXELS = 40_000_000
 SUPPORTED_FORMATS = {"JPEG", "PNG", "WEBP", "BMP", "TIFF", "GIF", "HEIF", "AVIF"}
 session_lock = threading.Lock()
@@ -17,7 +21,8 @@ rembg_session = None
 register_heif_opener()
 
 
-def prepare_image(image_data):
+# prepares the image for background removal
+def prepare_image(image_data): 
     try:
         with Image.open(io.BytesIO(image_data)) as source:
             if source.format not in SUPPORTED_FORMATS:
@@ -33,6 +38,7 @@ def prepare_image(image_data):
     return normalized.getvalue()
 
 
+# initializes a rembg session if one does not already exist
 def get_rembg_session():
     global rembg_session
     if rembg_session is None:
@@ -44,11 +50,13 @@ def get_rembg_session():
     return rembg_session
 
 
+# Flask routes
 @app.get("/")
 def index():
     return render_template("index.html")
 
 
+# API endpoint for background removal
 @app.post("/api/remove-background")
 def remove_background():
     uploaded_file = request.files.get("image")
@@ -76,6 +84,7 @@ def remove_background():
     )
 
 
+# error handler for file size limit
 @app.errorhandler(413)
 def file_too_large(_error):
     return jsonify(error="That file is over the 12 MB upload limit."), 413
