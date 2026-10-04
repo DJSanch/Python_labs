@@ -77,12 +77,12 @@ async def handle_message(event: Any, settings: Settings) -> None:
         return
 
     try:
-        await event.reply(REPLY_TEXT)
+        await event.respond(REPLY_TEXT)
     except errors.RPCError:
         release_message(database_path, event.chat_id, event.id)
         raise
 
-    LOGGER.info("Replied from your account in chat %s", event.chat_id)
+    LOGGER.info("Posted a normal message from your account in chat %s", event.chat_id)
 
 
 def load_settings() -> Settings:
