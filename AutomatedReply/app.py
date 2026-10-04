@@ -17,7 +17,7 @@ SLOT_OPEN_PATTERN = re.compile(
 )
 LOGGER = logging.getLogger(__name__)
 
-
+# TypedDict is only available in Python 3.8+, so we use a conditional import for older versions.
 class Settings(TypedDict):
     api_id: int
     api_hash: str
@@ -26,11 +26,11 @@ class Settings(TypedDict):
     database_path: Path
     session_path: Path
 
-
+ # Check if the message text matches the announcement pattern for open slots.
 def matches_announcement(message_text: str | None) -> bool:
     return bool(message_text and SLOT_OPEN_PATTERN.search(message_text))
 
-
+# Initialize the SQLite database for storing replied messages.
 def initialize_database(database_path: Path) -> None:
     database_path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(database_path) as connection:
@@ -44,7 +44,7 @@ def initialize_database(database_path: Path) -> None:
             """
         )
 
-
+# Claim a message in the database to prevent duplicate replies. Returns True if the claim was successful, False if the message was already claimed.
 def claim_message(database_path: Path, chat_id: int, message_id: int) -> bool:
     with sqlite3.connect(database_path, timeout=5) as connection:
         cursor = connection.execute(
@@ -53,7 +53,7 @@ def claim_message(database_path: Path, chat_id: int, message_id: int) -> bool:
         )
         return cursor.rowcount == 1
 
-
+# Release a claimed message from the database, allowing it to be replied to again.
 def release_message(database_path: Path, chat_id: int, message_id: int) -> None:
     with sqlite3.connect(database_path, timeout=5) as connection:
         connection.execute(
@@ -61,7 +61,7 @@ def release_message(database_path: Path, chat_id: int, message_id: int) -> None:
             (chat_id, message_id),
         )
 
-
+# Handle an incoming message event. If the message matches the announcement pattern and hasn't been replied to yet, send a reply.
 async def handle_message(event: Any, settings: Settings) -> None:
     if not event.is_group or event.chat_id is None:
         return
@@ -84,7 +84,7 @@ async def handle_message(event: Any, settings: Settings) -> None:
 
     LOGGER.info("Posted a normal message from your account in chat %s", event.chat_id)
 
-
+# Load settings from the .env file and validate them. Returns a Settings dictionary.
 def load_settings() -> Settings:
     load_dotenv(APP_DIR / ".env")
 
@@ -117,7 +117,7 @@ def load_settings() -> Settings:
         "session_path": session_path,
     }
 
-
+# Main entry point for the script. Sets up logging, loads settings, initializes the database, and starts the Telegram client to listen for messages.
 def main() -> None:
     logging.basicConfig(
         level=logging.INFO,

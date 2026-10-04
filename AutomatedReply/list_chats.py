@@ -5,6 +5,7 @@ from telethon import TelegramClient
 
 load_dotenv()
 
+# Initialize the Telegram client with API credentials from environment variables.
 client = TelegramClient(
     "telegram_user",
     int(os.environ["TELEGRAM_API_ID"]),
