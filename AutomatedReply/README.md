@@ -2,9 +2,10 @@
 
 This client watches Telegram groups for a message containing `slot open`,
 `slots open`, `slots are open`, `open slot`, or `open slots`, then replies to
-that message from your personal Telegram account. Any sender can trigger the
-reply. Replies are visible as your account. It uses Telegram's client API
-through Telethon, not a bot account.
+that message from your personal Telegram account. In groups with topics, the
+reply stays in the topic where the matching message was posted. Any sender can
+trigger the reply. Replies are visible as your account. It uses Telegram's
+client API through Telethon, not a bot account.
 
 ## Setup
 
@@ -20,6 +21,9 @@ through Telethon, not a bot account.
    python -m pip install -r requirements.txt
    python app.py
    ```
+
+To list groups and, for groups with topics enabled, their topic names and IDs,
+run `python list_chats.py` from this folder after setup.
 
 On first start, Telegram will send a login code to your account. Enter it in
 the terminal; enter your two-step verification password there too if prompted.

@@ -7,6 +7,8 @@ from typing import Any, TypedDict
 
 from dotenv import load_dotenv
 from telethon import TelegramClient, errors, events
+from telethon.tl.functions.messages import SendMessageRequest
+from telethon.tl.types import InputReplyToMessage
 
 
 APP_DIR = Path(__file__).resolve().parent
@@ -77,7 +79,28 @@ async def handle_message(event: Any, settings: Settings) -> None:
         return
 
     try:
-        await event.respond(REPLY_TEXT)
+        reply_header = event.message.reply_to
+        topic_id = (
+            getattr(reply_header, "reply_to_top_id", None)
+            if reply_header is not None
+            else None
+        )
+        if topic_id is None and reply_header is not None and reply_header.forum_topic:
+            topic_id = reply_header.reply_to_msg_id
+
+        if topic_id is None:
+            await event.respond(REPLY_TEXT)
+        else:
+            await event.client(
+                SendMessageRequest(
+                    peer=await event.message.get_input_chat(),
+                    message=REPLY_TEXT,
+                    reply_to=InputReplyToMessage(
+                        reply_to_msg_id=topic_id,
+                        top_msg_id=topic_id,
+                    ),
+                )
+            )
     except errors.RPCError:
         release_message(database_path, event.chat_id, event.id)
         raise
